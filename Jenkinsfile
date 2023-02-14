@@ -46,14 +46,6 @@ pipeline {
                 archiveArtifacts artifacts: 'target/*.jar'
             }
         }
-
-        stage ('Package') {
-            steps {
-                sh 'mvn package'
-                archiveArtifacts artifacts: 'src/**/*.java'
-                archiveArtifacts artifacts: 'target/*.jar'
-            }
-        }
         stage ('Building image') {
             steps {
                 script {
@@ -75,13 +67,12 @@ pipeline {
                 sh "docker rmi $registry:$BUILD_NUMBER"
             }
         }
-
-        post {
-        	failure{
-               	  mail to: 'nathanrheadowen@gmail.com',
-        	  subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
-        	  body: "Something is wrong with ${env.BUILD_URL}"
-        	}
+    }
+    post {
+        failure{
+              mail to: 'nathanrheadowen@gmail.com',
+          subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
+          body: "Something is wrong with ${env.BUILD_URL}"
         }
     }
 }
